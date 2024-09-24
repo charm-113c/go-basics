@@ -1,0 +1,5 @@
+Writing test in nvim, that's a first for us. So, let's reason. Why is it that making the channels buffered suddenly caused that mess?
+
+Without a buffer, things went rather well, with the exception of the last user. Chance made it finish after the println. But what of when the channel is buffered? Then the execution priority changes, because there's an ample buffer, the channel isn't blocking anymore, so it isn't scheduled as often. Well, thing is, it wasn't scheduled at all, which is rather surprising.
+
+No, your intuition looks good. Not good enough. The Llama did it where ChatGPT4.0 didn't. Blocking. It's going to block the main goroutine, it's then only natural that the main doesn't get that far ahead of the other goroutines. But once it's not blocking, the main is free to go all the way, and all other goroutines will have to keep up, or be terminated.
